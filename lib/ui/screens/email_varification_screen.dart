@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:taskmanagerwithapi/ui/screens/otp_varification_screen.dart';
 
 import '../utils/assets_utils.dart';
 
@@ -52,8 +54,14 @@ class EmailVarificationScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Icon(Icons.arrow_forward_ios_rounded)),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        OtpVarificationScreen()));
+                          },
+                          child: const Icon(CupertinoIcons.greaterthan_circle)),
                     ),
                     const SizedBox(
                       height: 30,
@@ -62,7 +70,7 @@ class EmailVarificationScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
-                          'Dont\'t have an Account?',
+                          'Have account?',
                           style: TextStyle(
                               fontWeight: FontWeight.w500, letterSpacing: 0.5),
                         ),

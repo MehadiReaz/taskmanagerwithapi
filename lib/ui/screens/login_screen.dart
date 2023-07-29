@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -69,7 +70,7 @@ class LoginScreen extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                           onPressed: () {},
-                          child: const Icon(Icons.arrow_forward_ios_rounded)),
+                          child: const Icon(CupertinoIcons.greaterthan_circle)),
                     ),
                     const SizedBox(
                       height: 30,
