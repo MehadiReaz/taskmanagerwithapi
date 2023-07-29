@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:taskmanagerwithapi/ui/screens/login_screen.dart';
+import 'package:taskmanagerwithapi/ui/screens/reset_password_screen.dart';
 
 import '../utils/assets_utils.dart';
 
@@ -83,7 +84,14 @@ class _OtpVarificationScreenState extends State<OtpVarificationScreen> {
                       height: 40,
                       width: double.infinity,
                       child: ElevatedButton(
-                          onPressed: () {}, child: const Text('Verify')),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) =>
+                                        const ResetPasswordScreen()));
+                          },
+                          child: const Text('Verify')),
                     ),
                     const SizedBox(
                       height: 30,
