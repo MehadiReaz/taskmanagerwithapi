@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:taskmanagerwithapi/ui/screens/auth/signup_screen.dart';
 
 import '../../utils/assets_utils.dart';
+import '../bottom_nav_bar/bottom_nav_bar.dart';
 import 'email_varification_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -70,7 +71,12 @@ class LoginScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const BottomNavBar()));
+                          },
                           child: const Icon(CupertinoIcons.greaterthan_circle)),
                     ),
                     const SizedBox(

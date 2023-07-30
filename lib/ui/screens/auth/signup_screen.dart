@@ -39,7 +39,6 @@ class SignUpScreen extends StatelessWidget {
                       height: 10,
                     ),
                     const TextField(
-                      enabled: false,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         hintText: 'Email',
