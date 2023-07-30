@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:taskmanagerwithapi/ui/screens/auth/signup_screen.dart';
 
 import '../../utils/assets_utils.dart';
+import '../../widgets/background_screen.dart';
 import '../bottom_nav_bar/bottom_nav_bar.dart';
 import 'email_varification_screen.dart';
 
@@ -15,14 +16,7 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          SizedBox(
-            height: double.infinity,
-            width: double.infinity,
-            child: SvgPicture.asset(
-              AssetsUtils.backgroundSvg,
-              fit: BoxFit.cover,
-            ),
-          ),
+          ScreenBackground(),
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(

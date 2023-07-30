@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:taskmanagerwithapi/ui/widgets/background_screen.dart';
 import '../../utils/assets_utils.dart';
 import 'otp_varification_screen.dart';
 
@@ -12,14 +13,7 @@ class EmailVarificationScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          SizedBox(
-            height: double.infinity,
-            width: double.infinity,
-            child: SvgPicture.asset(
-              AssetsUtils.backgroundSvg,
-              fit: BoxFit.cover,
-            ),
-          ),
+          ScreenBackground(),
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
