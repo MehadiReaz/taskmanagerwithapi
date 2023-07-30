@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:taskmanagerwithapi/ui/screens/login_screen.dart';
-import 'package:taskmanagerwithapi/ui/screens/reset_password_screen.dart';
 
-import '../utils/assets_utils.dart';
+import '../../utils/assets_utils.dart';
+import 'login_screen.dart';
+import 'reset_password_screen.dart';
 
 class OtpVarificationScreen extends StatefulWidget {
   const OtpVarificationScreen({super.key});
@@ -85,11 +85,12 @@ class _OtpVarificationScreenState extends State<OtpVarificationScreen> {
                       width: double.infinity,
                       child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) =>
-                                        const ResetPasswordScreen()));
+                                        const ResetPasswordScreen()),
+                                (router) => false);
                           },
                           child: const Text('Verify')),
                     ),

@@ -1,12 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:taskmanagerwithapi/ui/screens/otp_varification_screen.dart';
 
-import '../utils/assets_utils.dart';
+import '../../utils/assets_utils.dart';
+import 'login_screen.dart';
 
-class EmailVarificationScreen extends StatelessWidget {
-  const EmailVarificationScreen({super.key});
+class ResetPasswordScreen extends StatelessWidget {
+  const ResetPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,42 +25,65 @@ class EmailVarificationScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(34.0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(
-                      height: 164,
+                      height: 150,
+                    ),
+                    Center(
+                      child: SvgPicture.asset(
+                        AssetsUtils.logoSvg,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
                     ),
                     Text(
-                      'Get Started With',
+                      'Set Password',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     const Text(
-                      'A 6 digit pin will sent to your Email address',
+                      'Minimum length password 8 character with Latter and number combination',
                       style: TextStyle(color: Colors.grey),
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     const TextField(
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        hintText: 'Email',
+                        hintText: 'Password',
                       ),
                     ),
                     const SizedBox(
                       height: 10,
                     ),
+                    const TextField(
+                      keyboardType: TextInputType.emailAddress,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        hintText: 'Confirm Password',
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     SizedBox(
+                      height: 40,
                       width: double.infinity,
                       child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const OtpVarificationScreen()));
+                                    builder: (_) => const LoginScreen()),
+                                (route) => false);
                           },
-                          child: const Icon(CupertinoIcons.greaterthan_circle)),
+                          child: const Text('Confirm')),
                     ),
                     const SizedBox(
                       height: 30,
@@ -70,13 +92,17 @@ class EmailVarificationScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
-                          'Have account?',
+                          'Have Account?',
                           style: TextStyle(
                               fontWeight: FontWeight.w500, letterSpacing: 0.5),
                         ),
                         TextButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => const LoginScreen()),
+                                  (route) => false);
                             },
                             child: const Text('Sign in'))
                       ],

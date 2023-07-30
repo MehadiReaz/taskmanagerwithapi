@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:taskmanagerwithapi/ui/screens/auth/signup_screen.dart';
 
-import '../utils/assets_utils.dart';
+import '../../utils/assets_utils.dart';
 import 'email_varification_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -99,7 +100,13 @@ class LoginScreen extends StatelessWidget {
                               fontWeight: FontWeight.w500, letterSpacing: 0.5),
                         ),
                         TextButton(
-                            onPressed: () {}, child: const Text('SignUp'))
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => const SignUpScreen()));
+                            },
+                            child: const Text('SignUp'))
                       ],
                     ),
                   ],
