@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:taskmanagerwithapi/ui/screens/auth/signup_screen.dart';
-
 import '../../utils/assets_utils.dart';
 import '../../widgets/background_screen.dart';
 import '../bottom_nav_bar/bottom_nav_bar.dart';
