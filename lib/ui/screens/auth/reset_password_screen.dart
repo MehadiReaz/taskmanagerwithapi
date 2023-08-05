@@ -80,7 +80,7 @@ class ResetPasswordScreen extends StatelessWidget {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => const LoginScreen()),
+                                    builder: (_) => LoginScreen()),
                                 (route) => false);
                           },
                           child: const Text('Confirm')),
@@ -101,7 +101,7 @@ class ResetPasswordScreen extends StatelessWidget {
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (_) => const LoginScreen()),
+                                      builder: (_) => LoginScreen()),
                                   (route) => false);
                             },
                             child: const Text('Sign in'))
