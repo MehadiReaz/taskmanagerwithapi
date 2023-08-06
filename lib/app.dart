@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:taskmanagerwithapi/ui/screens/splash_screen.dart';
 
 class TaskManagerApp extends StatelessWidget {
+  static GlobalKey globalKey = GlobalKey();
   const TaskManagerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      key: TaskManagerApp.globalKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           brightness: Brightness.light,
