@@ -6,10 +6,13 @@ import 'package:taskmanagerwithapi/data/model/login_model.dart';
 class AuthUtility {
   AuthUtility._();
   static LoginModel userInfo = LoginModel();
+
   static Future<void> saveUserInfo(LoginModel loginModel) async {
     SharedPreferences _sharedPreferences =
         await SharedPreferences.getInstance();
-    _sharedPreferences.setString('user-data', jsonEncode(loginModel.toJson()));
+    await _sharedPreferences.setString(
+        'user-data', jsonEncode(loginModel.toJson()));
+    userInfo = loginModel;
   }
 
   static Future<LoginModel> getUserInfo() async {

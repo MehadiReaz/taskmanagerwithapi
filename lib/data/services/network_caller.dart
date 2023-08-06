@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:http/http.dart';
+import 'package:taskmanagerwithapi/data/model/auth_utility.dart';
 import 'package:taskmanagerwithapi/data/model/network_response.dart';
 
 class NetworkCaller {
@@ -29,7 +30,10 @@ class NetworkCaller {
       String url, Map<String, dynamic> body) async {
     try {
       Response response = await post(Uri.parse(url),
-          headers: {'content-type': 'application/json'},
+          headers: {
+            'content-type': 'application/json',
+            'token': AuthUtility.userInfo.token.toString()
+          },
           body: jsonEncode(body));
 
       print(response.statusCode.toString());

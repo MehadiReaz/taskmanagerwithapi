@@ -41,8 +41,10 @@ class UserProfileBanner extends StatelessWidget {
           IconButton(
               onPressed: () {
                 userLogout();
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => LoginScreen()));
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => LoginScreen()),
+                    (route) => false);
               },
               icon: Icon(Icons.logout))
         ],
