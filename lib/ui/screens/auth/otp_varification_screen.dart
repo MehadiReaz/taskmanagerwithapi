@@ -2,126 +2,164 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
+import '../../../data/model/network_response.dart';
+import '../../../data/services/network_caller.dart';
+import '../../../data/utils/urls.dart';
 import '../../utils/assets_utils.dart';
+import '../../widgets/background_screen.dart';
 import 'login_screen.dart';
 import 'reset_password_screen.dart';
 
-class OtpVarificationScreen extends StatefulWidget {
-  const OtpVarificationScreen({super.key});
+class OtpVerificationScreen extends StatefulWidget {
+  final String email;
+
+  const OtpVerificationScreen({Key? key, required this.email})
+      : super(key: key);
 
   @override
-  State<OtpVarificationScreen> createState() => _OtpVarificationScreenState();
+  State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
 }
 
-class _OtpVarificationScreenState extends State<OtpVarificationScreen> {
+class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
+  final TextEditingController _otpTEController = TextEditingController();
+  bool _otpVerificationInProgress = false;
+
+  Future<void> verifyOTP() async {
+    _otpVerificationInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+    final NetworkResponse response = await NetworkCaller()
+        .getRequest(Urls.otpVerify(widget.email, _otpTEController.text));
+    _otpVerificationInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+    if (response.isSuccess) {
+      if (mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ResetPasswordScreen(
+                      email: widget.email,
+                      otp: _otpTEController.text,
+                    )));
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Otp verification has been failed!')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SizedBox(
-            height: double.infinity,
-            width: double.infinity,
-            child: SvgPicture.asset(
-              AssetsUtils.backgroundSvg,
-              fit: BoxFit.cover,
-            ),
-          ),
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(64.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 140,
+      body: ScreenBackground(
+        child: SingleChildScrollView(
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 64,
+                  ),
+                  Text(
+                    'PIN Verification',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    'A 6 digits pin will sent to your email address',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.grey,
+                        ),
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  PinCodeTextField(
+                    controller: _otpTEController,
+                    length: 6,
+                    obscureText: false,
+                    animationType: AnimationType.fade,
+                    keyboardType: TextInputType.number,
+                    pinTheme: PinTheme(
+                      shape: PinCodeFieldShape.box,
+                      borderRadius: BorderRadius.circular(5),
+                      fieldHeight: 50,
+                      fieldWidth: 40,
+                      inactiveFillColor: Colors.white,
+                      inactiveColor: Colors.red,
+                      activeColor: Colors.white,
+                      selectedColor: Colors.green,
+                      selectedFillColor: Colors.white,
+                      activeFillColor: Colors.white,
                     ),
-                    Text(
-                      'PIN Verification',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const Text(
-                      'A 6 digit verification pin will sent to your Email address',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    PinCodeTextField(
-                      keyboardType: TextInputType.number,
-                      length: 6,
-                      obscureText: false,
-                      animationType: AnimationType.fade,
-                      pinTheme: PinTheme(
-                        inactiveColor: Colors.white,
-                        selectedColor: Colors.green,
-                        activeColor: Colors.white,
-                        selectedFillColor: Colors.white,
-                        inactiveFillColor: Colors.white,
-                        shape: PinCodeFieldShape.box,
-                        borderRadius: BorderRadius.circular(5),
-                        fieldHeight: 45,
-                        fieldWidth: 40,
-                        activeFillColor: Colors.white,
+                    animationDuration: const Duration(milliseconds: 300),
+                    enableActiveFill: true,
+                    cursorColor: Colors.green,
+                    enablePinAutofill: true,
+                    onCompleted: (v) {},
+                    onChanged: (value) {},
+                    beforeTextPaste: (text) {
+                      print("Allowing to paste $text");
+                      //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+                      //but you can show anything you want here, like your pop up saying wrong paste format or etc
+                      return true;
+                    },
+                    appContext: context,
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Visibility(
+                      visible: _otpVerificationInProgress == false,
+                      replacement: const Center(
+                        child: CircularProgressIndicator(),
                       ),
-                      enablePinAutofill: true,
-                      animationDuration: const Duration(milliseconds: 300),
-                      backgroundColor: Colors.transparent,
-                      cursorColor: Colors.green,
-                      enableActiveFill: true,
-                      onCompleted: (v) {},
-                      onChanged: (value) {},
-                      beforeTextPaste: (text) {
-                        return true;
-                      },
-                      appContext: context,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      height: 40,
-                      width: double.infinity,
                       child: ElevatedButton(
+                        onPressed: () {
+                          verifyOTP();
+                        },
+                        child: const Text('Verify'),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Have an account?",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, letterSpacing: 0.5),
+                      ),
+                      TextButton(
                           onPressed: () {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) =>
-                                        const ResetPasswordScreen()),
-                                (router) => false);
+                                    builder: (context) => LoginScreen()),
+                                (route) => false);
                           },
-                          child: const Text('Verify')),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Have account?',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500, letterSpacing: 0.5),
-                        ),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => LoginScreen()),
-                                  (route) => false);
-                            },
-                            child: const Text('Sign in'))
-                      ],
-                    ),
-                  ],
-                ),
+                          child: const Text('Sign in')),
+                    ],
+                  )
+                ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

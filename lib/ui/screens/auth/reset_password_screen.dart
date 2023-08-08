@@ -5,7 +5,8 @@ import '../../utils/assets_utils.dart';
 import 'login_screen.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
-  const ResetPasswordScreen({super.key});
+  const ResetPasswordScreen(
+      {super.key, required String email, required String otp});
 
   @override
   Widget build(BuildContext context) {

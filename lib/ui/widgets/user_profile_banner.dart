@@ -1,54 +1,88 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:taskmanagerwithapi/data/model/auth_utility.dart';
 import 'package:taskmanagerwithapi/ui/screens/auth/login_screen.dart';
 
-class UserProfileBanner extends StatelessWidget {
-  UserProfileBanner({
+import '../screens/profile/update_profile_screen.dart';
+
+class UserProfileAppBar extends StatefulWidget {
+  final bool? isUpdateScreen;
+
+  const UserProfileAppBar({
     super.key,
+    this.isUpdateScreen,
   });
-  void userLogout() {
-    AuthUtility.clearUserInfo();
-  }
 
   @override
+  State<UserProfileAppBar> createState() => _UserProfileAppBarState();
+}
+
+class _UserProfileAppBarState extends State<UserProfileAppBar> {
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      color: Colors.green,
-      child: Row(
-        children: [
-          Expanded(
-            child: ListTile(
-              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-              tileColor: Colors.green,
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(
-                  AuthUtility.userInfo.data?.photo ?? '',
-                ),
-                radius: 15,
-                onBackgroundImageError: (_, __) => Icon(Icons.image),
-              ),
-              title: Text(
-                '${AuthUtility.userInfo.data?.firstName} ${AuthUtility.userInfo.data?.lastName}',
-                style: TextStyle(fontSize: 14, color: Colors.white),
-              ),
-              subtitle: Text(
-                AuthUtility.userInfo.data?.email ?? '',
-                style: TextStyle(fontSize: 12, color: Colors.white),
+    return AppBar(
+      backgroundColor: Colors.green,
+      title: GestureDetector(
+        onTap: () {
+          if ((widget.isUpdateScreen ?? false) == false) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const UpdateProfileScreen()));
+          }
+        },
+        child: Row(
+          children: [
+            Visibility(
+              visible: (widget.isUpdateScreen ?? false) == false,
+              child: Row(
+                children: [
+                  CachedNetworkImage(
+                    placeholder: (_, __) =>
+                        const Icon(Icons.account_circle_outlined),
+                    imageUrl: AuthUtility.userInfo.data?.photo ?? '',
+                    errorWidget: (_, __, ___) =>
+                        const Icon(Icons.account_circle_outlined),
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                ],
               ),
             ),
-          ),
-          IconButton(
-              onPressed: () {
-                userLogout();
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => LoginScreen()),
-                    (route) => false);
-              },
-              icon: Icon(Icons.logout))
-        ],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${AuthUtility.userInfo.data?.firstName ?? ''} ${AuthUtility.userInfo.data?.lastName ?? ''}',
+                  style: const TextStyle(fontSize: 14, color: Colors.white),
+                ),
+                Text(
+                  AuthUtility.userInfo.data?.email ?? 'Unknown',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
+      actions: [
+        IconButton(
+          onPressed: () async {
+            await AuthUtility.clearUserInfo();
+            if (mounted) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (route) => false);
+            }
+          },
+          icon: const Icon(Icons.logout),
+        ),
+      ],
     );
   }
 }

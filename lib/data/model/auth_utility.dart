@@ -1,39 +1,39 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:taskmanagerwithapi/data/model/login_model.dart';
+
+import 'login_model.dart';
 
 class AuthUtility {
   AuthUtility._();
   static LoginModel userInfo = LoginModel();
 
-  static Future<void> saveUserInfo(LoginModel loginModel) async {
-    SharedPreferences _sharedPreferences =
-        await SharedPreferences.getInstance();
-    await _sharedPreferences.setString(
-        'user-data', jsonEncode(loginModel.toJson()));
-    userInfo = loginModel;
+  static Future<void> saveUserInfo(LoginModel model) async {
+    SharedPreferences _sharedPrefs = await SharedPreferences.getInstance();
+    await _sharedPrefs.setString('user-data', jsonEncode(model.toJson()));
+    userInfo = model;
+  }
+
+  static Future<void> updateUserInfo(UserData data) async {
+    SharedPreferences _sharedPrefs = await SharedPreferences.getInstance();
+    userInfo.data = data;
+    await _sharedPrefs.setString('user-data', jsonEncode(userInfo.toJson()));
   }
 
   static Future<LoginModel> getUserInfo() async {
-    SharedPreferences _sharedPreferences =
-        await SharedPreferences.getInstance();
-    String value = _sharedPreferences.getString(
-      'user-data',
-    )!;
+    SharedPreferences _sharedPrefs = await SharedPreferences.getInstance();
+    String value = _sharedPrefs.getString('user-data')!;
     return LoginModel.fromJson(jsonDecode(value));
   }
 
   static Future<void> clearUserInfo() async {
-    SharedPreferences _sharedPreferences =
-        await SharedPreferences.getInstance();
-    _sharedPreferences.clear();
+    SharedPreferences _sharedPrefs = await SharedPreferences.getInstance();
+    await _sharedPrefs.clear();
   }
 
   static Future<bool> checkIfUserLoggedIn() async {
-    SharedPreferences _sharedPreferences =
-        await SharedPreferences.getInstance();
-    bool isLogin = _sharedPreferences.containsKey('user-data');
+    SharedPreferences _sharedPrefs = await SharedPreferences.getInstance();
+    bool isLogin = _sharedPrefs.containsKey('user-data');
     if (isLogin) {
       userInfo = await getUserInfo();
     }

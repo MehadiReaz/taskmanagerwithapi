@@ -54,126 +54,128 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          ScreenBackground(),
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 150,
-                      ),
-                      Center(
-                        child: SvgPicture.asset(
-                          AssetsUtils.logoSvg,
+          ScreenBackground(
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 150,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 70,
-                      ),
-                      Text(
-                        'Get Started With',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        validator: (String? value) {
-                          if (value?.isEmpty ?? true) {
-                            return 'Enter Email Address';
-                          }
-                        },
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          hintText: 'Email',
+                        Center(
+                          child: SvgPicture.asset(
+                            AssetsUtils.logoSvg,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        validator: (String? value) {
-                          if (value?.isEmpty ?? true) {
-                            return 'Enter Password';
-                          }
-                        },
-                        controller: _passwordController,
-                        keyboardType: TextInputType.emailAddress,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          hintText: 'Password',
+                        const SizedBox(
+                          height: 70,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Visibility(
-                          visible: _loginInProgress == false,
-                          replacement:
-                              Center(child: CircularProgressIndicator()),
-                          child: ElevatedButton(
-                              onPressed: () {
-                                if (!_formKey.currentState!.validate()) {
-                                  return;
-                                }
-                                userLogin();
-                              },
-                              child: const Icon(
-                                  CupertinoIcons.greaterthan_circle)),
+                        Text(
+                          'Get Started With',
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Center(
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const EmailVarificationScreen()));
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          validator: (String? value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'Enter Email Address';
+                            }
                           },
-                          child: const Text(
-                            'Forgot Password',
-                            style: TextStyle(color: Colors.grey),
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                            hintText: 'Email',
                           ),
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Dont\'t have an Account?',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: 0.5),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          validator: (String? value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'Enter Password';
+                            }
+                          },
+                          controller: _passwordController,
+                          keyboardType: TextInputType.emailAddress,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            hintText: 'Password',
                           ),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => const SignUpScreen()));
-                              },
-                              child: const Text('SignUp'))
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Visibility(
+                            visible: _loginInProgress == false,
+                            replacement:
+                                Center(child: CircularProgressIndicator()),
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  if (!_formKey.currentState!.validate()) {
+                                    return;
+                                  }
+                                  userLogin();
+                                },
+                                child: const Icon(
+                                    CupertinoIcons.greaterthan_circle)),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Center(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          const EmailVerificationScreen()));
+                            },
+                            child: const Text(
+                              'Forgot Password',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Dont\'t have an Account?',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.5),
+                            ),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              const SignUpScreen()));
+                                },
+                                child: const Text('SignUp'))
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+          )
         ],
       ),
     );

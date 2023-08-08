@@ -1,37 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:taskmanagerwithapi/data/model/task_list_model.dart';
 
 class TaskListTile extends StatelessWidget {
+  final VoidCallback onDeleteTap, onEditTap;
+
   const TaskListTile({
     super.key,
+    required this.data,
+    required this.onDeleteTap,
+    required this.onEditTap,
   });
+
+  final TaskData data;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text('Title will be here'),
+      title: Text(data.title ?? 'Unknown'),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Title will be here'),
-          Text('Date'),
+          Text(data.description ?? ''),
+          Text(data.createdDate ?? ''),
           Row(
             children: [
               Chip(
-                label: Text('new'),
-                backgroundColor: Colors.green,
+                label: Text(
+                  data.status ?? 'New',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                backgroundColor: Colors.blue,
               ),
               const Spacer(),
               IconButton(
-                  onPressed: () {},
+                  onPressed: onDeleteTap,
                   icon: Icon(
                     Icons.delete_forever_outlined,
                     color: Colors.red.shade300,
                   )),
               IconButton(
-                  onPressed: () {},
-                  icon: Icon(
+                  onPressed: onEditTap,
+                  icon: const Icon(
                     Icons.edit,
-                    color: Colors.green.shade500,
+                    color: Colors.green,
                   )),
             ],
           )
