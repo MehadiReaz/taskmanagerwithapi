@@ -226,7 +226,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               )
                             : ElevatedButton(
                                 onPressed: () {
-                                  updateProfile();
+                                  if (_formKey.currentState!.validate()) {
+                                    updateProfile();
+                                  }
                                 },
                                 child: const Text('Update'),
                               ),

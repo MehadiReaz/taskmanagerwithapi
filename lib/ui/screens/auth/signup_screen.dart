@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:taskmanagerwithapi/data/model/network_response.dart';
 import 'package:taskmanagerwithapi/data/services/network_caller.dart';
 import 'package:taskmanagerwithapi/data/utils/urls.dart';
+import 'package:taskmanagerwithapi/ui/widgets/background_screen.dart';
 
 import '../../utils/assets_utils.dart';
 
@@ -59,155 +60,157 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SizedBox(
-            height: double.infinity,
-            width: double.infinity,
-            child: SvgPicture.asset(
-              AssetsUtils.backgroundSvg,
-              fit: BoxFit.cover,
+      body: ScreenBackground(
+        child: Stack(
+          children: [
+            SizedBox(
+              height: double.infinity,
+              width: double.infinity,
+              child: SvgPicture.asset(
+                AssetsUtils.backgroundSvg,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 70,
-                      ),
-                      Text(
-                        'Get Started With',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        validator: (String? value) {
-                          if (value?.isEmpty ?? true) {
-                            return 'Enter Email Address';
-                          }
-                        },
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          hintText: 'Email',
+            SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 70,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        validator: (String? value) {
-                          if (value?.isEmpty ?? true) {
-                            return 'Enter First Name';
-                          }
-                        },
-                        keyboardType: TextInputType.name,
-                        controller: _firstNameController,
-                        decoration: InputDecoration(
-                          hintText: 'First Name',
+                        Text(
+                          'Get Started With',
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        validator: (String? value) {
-                          if (value?.isEmpty ?? true) {
-                            return 'Enter Last Name';
-                          }
-                        },
-                        keyboardType: TextInputType.name,
-                        controller: _lastNameController,
-                        decoration: InputDecoration(
-                          hintText: 'Last Name',
+                        const SizedBox(
+                          height: 10,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        validator: (String? value) {
-                          if (value?.isEmpty ?? true) {
-                            return 'Enter Mobile No.';
-                          }
-                        },
-                        controller: _mobileController,
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                          hintText: 'Mobile',
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        validator: (String? value) {
-                          if (value?.isEmpty ?? true) {
-                            return 'Enter Password';
-                          }
-                        },
-                        controller: _passwordController,
-                        keyboardType: TextInputType.emailAddress,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          hintText: 'Password',
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Visibility(
-                          visible: _signUpInProgress == false,
-                          replacement:
-                              Center(child: CircularProgressIndicator()),
-                          child: ElevatedButton(
-                              onPressed: () {
-                                if (!_formKey.currentState!.validate()) {
-                                  return;
-                                }
-                                userSignup();
-                              },
-                              child: const Icon(
-                                  CupertinoIcons.greaterthan_circle)),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Have Account?',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: 0.5),
+                        TextFormField(
+                          validator: (String? value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'Enter Email Address';
+                            }
+                          },
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                            hintText: 'Email',
                           ),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Sign in'))
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          validator: (String? value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'Enter First Name';
+                            }
+                          },
+                          keyboardType: TextInputType.name,
+                          controller: _firstNameController,
+                          decoration: InputDecoration(
+                            hintText: 'First Name',
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          validator: (String? value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'Enter Last Name';
+                            }
+                          },
+                          keyboardType: TextInputType.name,
+                          controller: _lastNameController,
+                          decoration: InputDecoration(
+                            hintText: 'Last Name',
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          validator: (String? value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'Enter Mobile No.';
+                            }
+                          },
+                          controller: _mobileController,
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                            hintText: 'Mobile',
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          validator: (String? value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'Enter Password';
+                            }
+                          },
+                          controller: _passwordController,
+                          keyboardType: TextInputType.emailAddress,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            hintText: 'Password',
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Visibility(
+                            visible: _signUpInProgress == false,
+                            replacement:
+                                Center(child: CircularProgressIndicator()),
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  if (!_formKey.currentState!.validate()) {
+                                    return;
+                                  }
+                                  userSignup();
+                                },
+                                child: const Icon(
+                                    CupertinoIcons.greaterthan_circle)),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Have Account?',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.5),
+                            ),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Sign in'))
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

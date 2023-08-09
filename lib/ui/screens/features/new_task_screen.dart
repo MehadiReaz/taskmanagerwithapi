@@ -139,12 +139,16 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                           return TaskListTile(
                             data: _taskListModel.data![index],
                             onDeleteTap: () {
+                              getCountSummary();
+                              getNewTasks();
                               deleteTask(_taskListModel.data![index].sId!);
                             },
                             onEditTap: () {
                               // showEditBottomSheet(_taskListModel.data![index]);
                               showStatusUpdateBottomSheet(
                                   _taskListModel.data![index]);
+                              getCountSummary();
+                              getNewTasks();
                             },
                           );
                         },
