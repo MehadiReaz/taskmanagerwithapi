@@ -1,148 +1,174 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:taskmanagerwithapi/ui/widgets/background_screen.dart';
-
-import '../../utils/assets_utils.dart';
+import '../../../data/model/network_response.dart';
+import '../../../data/services/network_caller.dart';
+import '../../../data/utils/urls.dart';
+import '../../widgets/background_screen.dart';
 import 'login_screen.dart';
 
-// ignore: must_be_immutable
-class ResetPasswordScreen extends StatelessWidget {
-  ResetPasswordScreen({super.key, required String email, required String otp});
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class ResetPasswordScreen extends StatefulWidget {
+  final String email, otp;
 
-  TextEditingController _passController = TextEditingController();
-  TextEditingController _confirmPassController = TextEditingController();
+  const ResetPasswordScreen({Key? key, required this.email, required this.otp})
+      : super(key: key);
+
+  @override
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+}
+
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  final TextEditingController _passwordTEController = TextEditingController();
+  final TextEditingController _confirmPasswordTEController =
+      TextEditingController();
+  bool _setPasswordInProgress = false;
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  Future<void> resetPassword() async {
+    _setPasswordInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+
+    final Map<String, dynamic> requestBody = {
+      "email": widget.email,
+      "OTP": widget.otp,
+      "password": _passwordTEController.text
+    };
+
+    final NetworkResponse response =
+        await NetworkCaller().postRequest(Urls.resetPassword, requestBody);
+    _setPasswordInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+    if (response.isSuccess) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Password reset successful!')));
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginScreen()),
+            (route) => false);
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Reset password has been failed!')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SizedBox(
-            height: double.infinity,
-            width: double.infinity,
-            child: SvgPicture.asset(
-              AssetsUtils.backgroundSvg,
-              fit: BoxFit.cover,
-            ),
-          ),
-          ScreenBackground(
-            child: SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(34.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 150,
-                        ),
-                        Center(
-                          child: SvgPicture.asset(
-                            AssetsUtils.logoSvg,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        Text(
-                          'Set Password',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Text(
-                          'Minimum length password 8 character with Latter and number combination',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          controller: _passController,
-                          validator: (String? value) {
-                            if ((value?.isEmpty ?? true) ||
-                                value!.length <= 5) {
-                              return 'Enter a password more than 6 letters';
-                            }
-                            return null;
-                          },
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            hintText: 'Password',
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          validator: (String? value) {
-                            if ((value?.isEmpty ?? true) ||
-                                value!.length <= 5 ||
-                                _passController != _confirmPassController) {
-                              return 'Password doesn\'t match';
-                            }
-                            return null;
-                          },
-                          controller: _confirmPassController,
-                          keyboardType: TextInputType.text,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            hintText: 'Confirm Password',
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        SizedBox(
-                          height: 40,
-                          width: double.infinity,
-                          child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => LoginScreen()),
-                                    (route) => false);
-                              },
-                              child: const Text('Confirm')),
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              'Have Account?',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: 0.5),
-                            ),
-                            TextButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => LoginScreen()),
-                                        (route) => false);
-                                  }
-                                },
-                                child: const Text('Sign in'))
-                          ],
-                        ),
-                      ],
+      body: ScreenBackground(
+        child: SingleChildScrollView(
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 64,
                     ),
-                  ),
+                    Text(
+                      'Set Password',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      'Minimum password should be 8 letters with numbers & symbols',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.grey,
+                          ),
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    TextFormField(
+                      controller: _passwordTEController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        hintText: 'Password',
+                      ),
+                      validator: (String? value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Enter your password';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    TextFormField(
+                      controller: _confirmPasswordTEController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        hintText: 'Confirm Password',
+                      ),
+                      validator: (String? value) {
+                        if (value?.isEmpty ?? true) {
+                          return 'Enter your confirm password';
+                        } else if (value! != _passwordTEController.text) {
+                          return 'Confirm password does n\'t match';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Visibility(
+                        visible: _setPasswordInProgress == false,
+                        replacement: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (!_formKey.currentState!.validate()) {
+                              return;
+                            }
+                            resetPassword();
+                          },
+                          child: const Text('Confirm'),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Have an account?",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, letterSpacing: 0.5),
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()),
+                                  (route) => false);
+                            },
+                            child: const Text('Sign in')),
+                      ],
+                    )
+                  ],
                 ),
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

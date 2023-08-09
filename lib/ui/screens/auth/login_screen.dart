@@ -47,6 +47,11 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Incrorrect Password')));
     }
+    if (mounted) {
+      setState(() {
+        _loginInProgress = false;
+      });
+    }
   }
 
   @override

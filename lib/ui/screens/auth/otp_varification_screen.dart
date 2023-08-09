@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -22,6 +24,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final TextEditingController _otpTEController = TextEditingController();
   bool _otpVerificationInProgress = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   Future<void> verifyOTP() async {
     _otpVerificationInProgress = true;
     if (mounted) {
@@ -33,22 +36,25 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     if (mounted) {
       setState(() {});
     }
-    if (response.isSuccess) {
+    if (response.isSuccess && response.body?['status'] == 'success') {
       if (mounted) {
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResetPasswordScreen(
-              email: widget.email,
-              otp: _otpTEController.text,
-            ),
-          ),
-        );
+            context,
+            MaterialPageRoute(
+                builder: (context) => ResetPasswordScreen(
+                      email: widget.email,
+                      otp: _otpTEController.text,
+                    )));
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Otp verification has been failed!')));
+        }
       }
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Otp verification has been failed!')));
+            const SnackBar(content: Text('Failed to verify OTP')));
       }
     }
   }
@@ -157,16 +163,17 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                               fontWeight: FontWeight.w500, letterSpacing: 0.5),
                         ),
                         TextButton(
-                            onPressed: () {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginScreen()),
-                                  (route) => false);
-                            },
-                            child: const Text('Sign in')),
+                          onPressed: () {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()),
+                                (route) => false);
+                          },
+                          child: const Text('Sign in'),
+                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
