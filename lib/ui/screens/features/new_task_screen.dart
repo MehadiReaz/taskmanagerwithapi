@@ -136,20 +136,24 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                     : ListView.separated(
                         itemCount: _taskListModel.data?.length ?? 0,
                         itemBuilder: (context, index) {
-                          return TaskListTile(
-                            data: _taskListModel.data![index],
-                            onDeleteTap: () {
-                              getCountSummary();
-                              getNewTasks();
-                              deleteTask(_taskListModel.data![index].sId!);
-                            },
-                            onEditTap: () {
-                              // showEditBottomSheet(_taskListModel.data![index]);
-                              showStatusUpdateBottomSheet(
-                                  _taskListModel.data![index]);
-                              getCountSummary();
-                              getNewTasks();
-                            },
+                          return Card(
+                            elevation: 5,
+                            child: TaskListTile(
+                              color: Colors.blue,
+                              data: _taskListModel.data![index],
+                              onDeleteTap: () {
+                                getCountSummary();
+                                getNewTasks();
+                                deleteTask(_taskListModel.data![index].sId!);
+                              },
+                              onEditTap: () {
+                                // showEditBottomSheet(_taskListModel.data![index]);
+                                showStatusUpdateBottomSheet(
+                                    _taskListModel.data![index]);
+                                getCountSummary();
+                                getNewTasks();
+                              },
+                            ),
                           );
                         },
                         separatorBuilder: (BuildContext context, int index) {

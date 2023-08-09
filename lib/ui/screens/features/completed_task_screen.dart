@@ -111,15 +111,19 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
                     : ListView.separated(
                         itemCount: _taskListModel.data?.length ?? 0,
                         itemBuilder: (context, index) {
-                          return TaskListTile(
-                            data: _taskListModel.data![index],
-                            onDeleteTap: () {
-                              deleteTask(_taskListModel.data![index].sId!);
-                            },
-                            onEditTap: () {
-                              showStatusUpdateBottomSheet(
-                                  _taskListModel.data![index]);
-                            },
+                          return Card(
+                            elevation: 5,
+                            child: TaskListTile(
+                              color: Colors.green,
+                              data: _taskListModel.data![index],
+                              onDeleteTap: () {
+                                deleteTask(_taskListModel.data![index].sId!);
+                              },
+                              onEditTap: () {
+                                showStatusUpdateBottomSheet(
+                                    _taskListModel.data![index]);
+                              },
+                            ),
                           );
                         },
                         separatorBuilder: (BuildContext context, int index) {

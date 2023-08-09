@@ -4,13 +4,14 @@ import 'package:taskmanagerwithapi/data/model/task_list_model.dart';
 class TaskListTile extends StatelessWidget {
   final VoidCallback onDeleteTap, onEditTap;
 
-  const TaskListTile({
+  TaskListTile({
+    this.color,
     super.key,
     required this.data,
     required this.onDeleteTap,
     required this.onEditTap,
   });
-
+  Color? color;
   final TaskData data;
 
   @override
@@ -29,7 +30,7 @@ class TaskListTile extends StatelessWidget {
                   data.status ?? 'New',
                   style: const TextStyle(color: Colors.white),
                 ),
-                backgroundColor: Colors.blue,
+                backgroundColor: color,
               ),
               const Spacer(),
               IconButton(
