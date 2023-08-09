@@ -92,10 +92,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           height: 10,
                         ),
                         TextFormField(
-                          validator: (String? value) {
+                          validator: (value) {
                             if (value?.isEmpty ?? true) {
                               return 'Enter Email Address';
                             }
+                            return null;
                           },
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
@@ -111,6 +112,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             if (value?.isEmpty ?? true) {
                               return 'Enter First Name';
                             }
+                            return null;
                           },
                           keyboardType: TextInputType.name,
                           controller: _firstNameController,
@@ -126,6 +128,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             if (value?.isEmpty ?? true) {
                               return 'Enter Last Name';
                             }
+                            return null;
                           },
                           keyboardType: TextInputType.name,
                           controller: _lastNameController,
@@ -141,6 +144,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             if (value?.isEmpty ?? true) {
                               return 'Enter Mobile No.';
                             }
+                            return null;
                           },
                           controller: _mobileController,
                           keyboardType: TextInputType.phone,
@@ -156,6 +160,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             if (value?.isEmpty ?? true) {
                               return 'Enter Password';
                             }
+                            return null;
                           },
                           controller: _passwordController,
                           keyboardType: TextInputType.emailAddress,

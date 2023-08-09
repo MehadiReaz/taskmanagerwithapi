@@ -3,8 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taskmanagerwithapi/data/model/auth_utility.dart';
 import 'package:taskmanagerwithapi/ui/screens/bottom_nav_bar/bottom_nav_bar.dart';
 import 'package:taskmanagerwithapi/ui/utils/assets_utils.dart';
-
-import '../../data/model/auth_utility.dart';
 import 'auth/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {

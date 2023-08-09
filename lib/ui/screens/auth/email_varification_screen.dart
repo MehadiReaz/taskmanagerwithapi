@@ -1,11 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:taskmanagerwithapi/ui/widgets/background_screen.dart';
 import '../../../data/model/network_response.dart';
 import '../../../data/services/network_caller.dart';
 import '../../../data/utils/urls.dart';
-import '../../utils/assets_utils.dart';
 import 'otp_varification_screen.dart';
 
 class EmailVerificationScreen extends StatefulWidget {

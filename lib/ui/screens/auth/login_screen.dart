@@ -93,6 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (value?.isEmpty ?? true) {
                               return 'Enter Email Address';
                             }
+                            return null;
                           },
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
@@ -108,6 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (value?.isEmpty ?? true) {
                               return 'Enter Password';
                             }
+                            return null;
                           },
                           controller: _passwordController,
                           keyboardType: TextInputType.emailAddress,
