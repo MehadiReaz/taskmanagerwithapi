@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taskmanagerwithapi/ui/screens/features/update_task_bottom_sheet.dart';
 import 'package:taskmanagerwithapi/ui/screens/features/update_task_status.dart';
+import 'package:taskmanagerwithapi/ui/widgets/background_screen.dart';
 
 import '../../../data/model/network_response.dart';
 import '../../../data/model/task_list_model.dart';
@@ -98,36 +99,38 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            const UserProfileAppBar(),
-            Expanded(
-              child: _getCompletedInProgress
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : ListView.separated(
-                      itemCount: _taskListModel.data?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return TaskListTile(
-                          data: _taskListModel.data![index],
-                          onDeleteTap: () {
-                            deleteTask(_taskListModel.data![index].sId!);
-                          },
-                          onEditTap: () {
-                            showStatusUpdateBottomSheet(
-                                _taskListModel.data![index]);
-                          },
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const Divider(
-                          height: 4,
-                        );
-                      },
-                    ),
-            ),
-          ],
+        child: ScreenBackground(
+          child: Column(
+            children: [
+              const UserProfileAppBar(),
+              Expanded(
+                child: _getCompletedInProgress
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : ListView.separated(
+                        itemCount: _taskListModel.data?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          return TaskListTile(
+                            data: _taskListModel.data![index],
+                            onDeleteTap: () {
+                              deleteTask(_taskListModel.data![index].sId!);
+                            },
+                            onEditTap: () {
+                              showStatusUpdateBottomSheet(
+                                  _taskListModel.data![index]);
+                            },
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const Divider(
+                            height: 4,
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );
