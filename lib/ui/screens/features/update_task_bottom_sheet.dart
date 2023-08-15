@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../data/model/network_response.dart';
 import '../../../data/model/task_list_model.dart';
@@ -83,7 +84,7 @@ class _UpdateTaskSheetState extends State<UpdateTaskSheet> {
                   IconButton(
                     icon: const Icon(Icons.close),
                     onPressed: () {
-                      Navigator.pop(context);
+                      Get.back();
                     },
                   )
                 ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../../data/model/network_response.dart';
 import '../../../data/services/network_caller.dart';
@@ -35,13 +36,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     }
     if (response.isSuccess && response.body?['status'] == 'success') {
       if (mounted) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ResetPasswordScreen(
-                      email: widget.email,
-                      otp: _otpTEController.text,
-                    )));
+        Get.to(ResetPasswordScreen(
+            email: widget.email, otp: _otpTEController.text));
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -161,11 +157,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginScreen()),
-                                (route) => false);
+                            Get.offAll(() => LoginScreen());
                           },
                           child: const Text('Sign in'),
                         ),

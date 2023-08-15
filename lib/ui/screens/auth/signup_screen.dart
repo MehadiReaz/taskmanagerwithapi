@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:taskmanagerwithapi/data/model/network_response.dart';
 import 'package:taskmanagerwithapi/data/services/network_caller.dart';
 import 'package:taskmanagerwithapi/data/utils/urls.dart';
@@ -203,7 +204,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             TextButton(
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  Get.back();
                                 },
                                 child: const Text('Sign in'))
                           ],

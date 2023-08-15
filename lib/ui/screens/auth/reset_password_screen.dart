@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../../data/model/network_response.dart';
 import '../../../data/services/network_caller.dart';
 import '../../../data/utils/urls.dart';
@@ -44,10 +45,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Password reset successful!')));
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => LoginScreen()),
-            (route) => false);
+
+        Get.offAll(() => LoginScreen());
       }
     } else {
       if (mounted) {
@@ -154,11 +153,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         ),
                         TextButton(
                             onPressed: () {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginScreen()),
-                                  (route) => false);
+                              Get.offAll(() => LoginScreen());
                             },
                             child: const Text('Sign in')),
                       ],

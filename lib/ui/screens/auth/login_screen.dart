@@ -1,15 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:taskmanagerwithapi/data/model/auth_utility.dart';
-import 'package:taskmanagerwithapi/data/model/login_model.dart';
-import 'package:taskmanagerwithapi/data/model/network_response.dart';
-import 'package:taskmanagerwithapi/data/services/network_caller.dart';
-import 'package:taskmanagerwithapi/data/utils/urls.dart';
+import 'package:get/get.dart';
 import 'package:taskmanagerwithapi/ui/screens/auth/signup_screen.dart';
+import 'package:taskmanagerwithapi/ui/screens/bottom_nav_bar/bottom_nav_bar.dart';
+import 'package:taskmanagerwithapi/ui/state_manager/login_controller.dart';
 import '../../utils/assets_utils.dart';
 import '../../widgets/background_screen.dart';
-import '../bottom_nav_bar/bottom_nav_bar.dart';
 import 'email_varification_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,36 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _loginInProgress = false;
-
-  void userLogin() async {
-    if (mounted) {
-      setState(() {
-        _loginInProgress = true;
-      });
-    }
-    final NetworkResponse response =
-        await NetworkCaller().postRequest(Urls.login, <String, dynamic>{
-      "email": _emailController.text.trim(),
-      "password": _passwordController.text,
-    });
-    if (response.isSuccess) {
-      LoginModel loginModel = LoginModel.fromJson(response.body!);
-      await AuthUtility.saveUserInfo(loginModel);
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const BottomNavBar()),
-          (route) => false);
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Incrorrect Password')));
-    }
-    if (mounted) {
-      setState(() {
-        _loginInProgress = false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,34 +88,42 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Visibility(
-                            visible: _loginInProgress == false,
-                            replacement:
-                                Center(child: CircularProgressIndicator()),
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  if (!_formKey.currentState!.validate()) {
-                                    return;
-                                  }
-                                  userLogin();
-                                },
-                                child: const Icon(
-                                    CupertinoIcons.greaterthan_circle)),
-                          ),
-                        ),
+                        GetBuilder<LoginController>(builder: (loginController) {
+                          return SizedBox(
+                            width: double.infinity,
+                            child: Visibility(
+                              visible: loginController.loginInProgress == false,
+                              replacement:
+                                  Center(child: CircularProgressIndicator()),
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    if (!_formKey.currentState!.validate()) {
+                                      return;
+                                    }
+                                    loginController
+                                        .userLogin(_emailController.text.trim(),
+                                            _passwordController.text)
+                                        .then((value) {
+                                      if (value == true) {
+                                        Get.offAll(() => BottomNavBar());
+                                      } else {
+                                        Get.snackbar(
+                                            'Failed', 'Login Failed try again');
+                                      }
+                                    });
+                                  },
+                                  child: const Icon(
+                                      CupertinoIcons.greaterthan_circle)),
+                            ),
+                          );
+                        }),
                         const SizedBox(
                           height: 30,
                         ),
                         Center(
                           child: InkWell(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) =>
-                                          const EmailVerificationScreen()));
+                              Get.to(() => EmailVerificationScreen());
                             },
                             child: const Text(
                               'Forgot Password',
@@ -167,11 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             TextButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              const SignUpScreen()));
+                                  Get.to(() => SignUpScreen());
                                 },
                                 child: const Text('SignUp'))
                           ],

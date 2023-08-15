@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:taskmanagerwithapi/data/model/auth_utility.dart';
 import 'package:taskmanagerwithapi/ui/screens/auth/login_screen.dart';
 
@@ -73,12 +74,8 @@ class _UserProfileAppBarState extends State<UserProfileAppBar> {
         IconButton(
           onPressed: () async {
             await AuthUtility.clearUserInfo();
-            if (mounted) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                  (route) => false);
-            }
+
+            Get.offAll(() => LoginScreen());
           },
           icon: const Icon(Icons.logout),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:taskmanagerwithapi/ui/widgets/user_profile_banner.dart';
 import '../../../data/model/network_response.dart';
 import '../../../data/model/summary_count_model.dart';
@@ -170,10 +171,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const AddNewTaskScreen()));
+          Get.to(AddNewTaskScreen());
         },
       ),
     );

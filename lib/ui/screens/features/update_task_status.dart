@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../data/model/network_response.dart';
 import '../../../data/model/task_list_model.dart';
@@ -42,7 +43,7 @@ class _UpdateTaskStatusSheetState extends State<UpdateTaskStatusSheet> {
     if (response.isSuccess) {
       widget.onUpdate();
       if (mounted) {
-        Navigator.pop(context);
+        Get.back();
       }
     } else {
       if (mounted) {

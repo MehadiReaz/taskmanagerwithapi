@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:taskmanagerwithapi/ui/widgets/background_screen.dart';
 import '../../../data/model/network_response.dart';
 import '../../../data/services/network_caller.dart';
@@ -30,12 +31,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     }
     if (response.isSuccess) {
       if (mounted) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => OtpVerificationScreen(
-                      email: _emailTEController.text.trim(),
-                    )));
+        Get.to(
+            () => OtpVerificationScreen(email: _emailTEController.text.trim()));
       }
     } else {
       if (mounted) {
@@ -124,7 +121,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                         ),
                         TextButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              Get.back();
                             },
                             child: const Text('Sign in')),
                       ],
