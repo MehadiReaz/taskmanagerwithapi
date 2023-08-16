@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taskmanagerwithapi/data/model/task_list_model.dart';
 
+// ignore: must_be_immutable
 class TaskListTile extends StatelessWidget {
   final VoidCallback onDeleteTap, onEditTap;
 

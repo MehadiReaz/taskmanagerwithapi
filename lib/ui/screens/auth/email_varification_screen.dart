@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:taskmanagerwithapi/ui/state_manager/email_varification_controller.dart';
 import 'package:taskmanagerwithapi/ui/widgets/background_screen.dart';
-import '../../../data/model/network_response.dart';
-import '../../../data/services/network_caller.dart';
-import '../../../data/utils/urls.dart';
 import 'otp_varification_screen.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
@@ -15,32 +13,7 @@ class EmailVerificationScreen extends StatefulWidget {
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
-  bool _emailVerficatinInProgress = false;
   final TextEditingController _emailTEController = TextEditingController();
-
-  Future<void> sendOTPToEmail() async {
-    _emailVerficatinInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-    final NetworkResponse response = await NetworkCaller()
-        .getRequest(Urls.sendOtpToEmail(_emailTEController.text.trim()));
-    _emailVerficatinInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-    if (response.isSuccess) {
-      if (mounted) {
-        Get.to(
-            () => OtpVerificationScreen(email: _emailTEController.text.trim()));
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Email verification has been failed!')));
-      }
-    }
-  }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
@@ -91,23 +64,42 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     const SizedBox(
                       height: 16,
                     ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Visibility(
-                        visible: _emailVerficatinInProgress == false,
-                        replacement: const Center(
-                          child: CircularProgressIndicator(),
+                    GetBuilder<EmailVarificationController>(
+                        builder: (emailVarificationController) {
+                      return SizedBox(
+                        width: double.infinity,
+                        child: Visibility(
+                          visible: emailVarificationController
+                                  .emailVerficatinInProgress ==
+                              false,
+                          replacement: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                emailVarificationController
+                                    .sendOTPToEmail(
+                                        _emailTEController.text.trim())
+                                    .then((value) {
+                                  if (value == true) {
+                                    Get.snackbar(
+                                        'Success', 'OTP sent to your email');
+                                    Get.to(() => OtpVerificationScreen(
+                                        email: _emailTEController.text.trim()));
+                                  } else {
+                                    Get.snackbar(
+                                        'Failed!', 'OTP could not sent');
+                                  }
+                                });
+                              }
+                            },
+                            child:
+                                const Icon(Icons.arrow_circle_right_outlined),
+                          ),
                         ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              sendOTPToEmail();
-                            }
-                          },
-                          child: const Icon(Icons.arrow_circle_right_outlined),
-                        ),
-                      ),
-                    ),
+                      );
+                    }),
                     const SizedBox(
                       height: 16,
                     ),
