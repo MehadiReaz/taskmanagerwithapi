@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import '../../../data/model/network_response.dart';
-import '../../../data/services/network_caller.dart';
-import '../../../data/utils/urls.dart';
+import 'package:taskmanagerwithapi/ui/state_manager/otp_varification_controller.dart';
 import '../../widgets/background_screen.dart';
 import 'login_screen.dart';
 import 'reset_password_screen.dart';
@@ -20,37 +18,8 @@ class OtpVerificationScreen extends StatefulWidget {
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final TextEditingController _otpTEController = TextEditingController();
-  bool _otpVerificationInProgress = false;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Future<void> verifyOTP() async {
-    _otpVerificationInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-    final NetworkResponse response = await NetworkCaller()
-        .getRequest(Urls.otpVerify(widget.email, _otpTEController.text));
-    _otpVerificationInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-    if (response.isSuccess && response.body?['status'] == 'success') {
-      if (mounted) {
-        Get.to(ResetPasswordScreen(
-            email: widget.email, otp: _otpTEController.text));
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('Otp verification has been failed!')));
-        }
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to verify OTP')));
-      }
-    }
-  }
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -117,9 +86,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       onCompleted: (v) {},
                       onChanged: (value) {},
                       beforeTextPaste: (text) {
-                        print("Allowing to paste $text");
-                        //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
-                        //but you can show anything you want here, like your pop up saying wrong paste format or etc
                         return true;
                       },
                       appContext: context,
@@ -127,23 +93,40 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     const SizedBox(
                       height: 16,
                     ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Visibility(
-                        visible: _otpVerificationInProgress == false,
-                        replacement: const Center(
-                          child: CircularProgressIndicator(),
+                    GetBuilder<OTPVarificationController>(
+                        builder: (otpVarificationController) {
+                      return SizedBox(
+                        width: double.infinity,
+                        child: Visibility(
+                          visible: otpVarificationController
+                                  .otpVerificationInProgress ==
+                              false,
+                          replacement: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                otpVarificationController
+                                    .verifyOTP(widget.email,
+                                        _otpTEController.text.trim())
+                                    .then((value) {
+                                  if (value == true) {
+                                    Get.to(() => ResetPasswordScreen(
+                                        email: widget.email,
+                                        otp: _otpTEController.text.trim()));
+                                  } else {
+                                    Get.snackbar(
+                                        'Failed!', 'OTP varificaton failed');
+                                  }
+                                });
+                              }
+                            },
+                            child: const Text('Verify'),
+                          ),
                         ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              verifyOTP();
-                            }
-                          },
-                          child: const Text('Verify'),
-                        ),
-                      ),
-                    ),
+                      );
+                    }),
                     const SizedBox(
                       height: 16,
                     ),
