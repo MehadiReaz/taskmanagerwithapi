@@ -20,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: 'Email',
                           ),
                         ),
@@ -81,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _passwordController,
                           keyboardType: TextInputType.emailAddress,
                           obscureText: true,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: 'Password',
                           ),
                         ),
@@ -93,8 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: double.infinity,
                             child: Visibility(
                               visible: loginController.loginInProgress == false,
-                              replacement:
-                                  Center(child: CircularProgressIndicator()),
+                              replacement: const Center(
+                                  child: CircularProgressIndicator()),
                               child: ElevatedButton(
                                   onPressed: () {
                                     if (!_formKey.currentState!.validate()) {
@@ -105,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             _passwordController.text)
                                         .then((value) {
                                       if (value == true) {
-                                        Get.offAll(() => BottomNavBar());
+                                        Get.offAll(() => const BottomNavBar());
                                       } else {
                                         Get.snackbar(
                                             'Failed', 'Login Failed try again');
@@ -123,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Center(
                           child: InkWell(
                             onTap: () {
-                              Get.to(() => EmailVerificationScreen());
+                              Get.to(() => const EmailVerificationScreen());
                             },
                             child: const Text(
                               'Forgot Password',
@@ -142,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             TextButton(
                                 onPressed: () {
-                                  Get.to(() => SignUpScreen());
+                                  Get.to(() => const SignUpScreen());
                                 },
                                 child: const Text('SignUp'))
                           ],

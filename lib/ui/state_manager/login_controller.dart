@@ -26,7 +26,7 @@ class LoginController extends GetxController {
     if (response.isSuccess) {
       LoginModel loginModel = LoginModel.fromJson(response.body!);
       await AuthUtility.saveUserInfo(loginModel);
-      Get.offAll(() => BottomNavBar());
+      Get.offAll(() => const BottomNavBar());
       return true;
     } else {
       return false;

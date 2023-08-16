@@ -2,11 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:taskmanagerwithapi/data/model/network_response.dart';
-import 'package:taskmanagerwithapi/data/services/network_caller.dart';
-import 'package:taskmanagerwithapi/data/utils/urls.dart';
 import 'package:taskmanagerwithapi/ui/widgets/background_screen.dart';
-
+import '../../state_manager/signup_controller.dart';
 import '../../utils/assets_utils.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -23,40 +20,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _signUpInProgress = false;
-  void userSignup() async {
-    if (mounted) {
-      setState(() {
-        _signUpInProgress = true;
-      });
-    }
-    final NetworkResponse response =
-        await NetworkCaller().postRequest(Urls.registration, <String, dynamic>{
-      "email": _emailController.text.trim(),
-      "firstName": _firstNameController.text.trim(),
-      "lastName": _lastNameController.text.trim(),
-      "mobile": _mobileController.text.trim(),
-      "password": _passwordController.text.trim(),
-      "photo": ""
-    });
-    if (mounted) {
-      setState(() {
-        _signUpInProgress = false;
-      });
-    }
-    if (response.isSuccess) {
-      _emailController.clear();
-      _firstNameController.clear();
-      _lastNameController.clear();
-      _mobileController.clear();
-      _passwordController.clear();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Registration success!')));
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Registration Failed!')));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,30 +129,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           controller: _passwordController,
                           keyboardType: TextInputType.emailAddress,
                           obscureText: true,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: 'Password',
                           ),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Visibility(
-                            visible: _signUpInProgress == false,
-                            replacement:
-                                Center(child: CircularProgressIndicator()),
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  if (!_formKey.currentState!.validate()) {
-                                    return;
-                                  }
-                                  userSignup();
-                                },
-                                child: const Icon(
-                                    CupertinoIcons.greaterthan_circle)),
-                          ),
-                        ),
+                        GetBuilder<SignupController>(
+                            builder: (signupController) {
+                          return SizedBox(
+                            width: double.infinity,
+                            child: Visibility(
+                              visible:
+                                  signupController.signupInProgress == false,
+                              replacement: const Center(
+                                  child: CircularProgressIndicator()),
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    if (!_formKey.currentState!.validate()) {
+                                      return;
+                                    }
+                                    signupController
+                                        .userSignup(
+                                            _emailController.text.trim(),
+                                            _firstNameController.text.trim(),
+                                            _lastNameController.text.trim(),
+                                            _mobileController.text.trim(),
+                                            _passwordController.text.trim())
+                                        .then((value) {
+                                      if (value == true) {
+                                        _emailController.clear();
+                                        _firstNameController.clear();
+                                        _lastNameController.clear();
+                                        _mobileController.clear();
+                                        _passwordController.clear();
+                                        Get.snackbar('Success',
+                                            'Account created successfully');
+                                      } else {
+                                        Get.snackbar('Failed!',
+                                            'Account creatation failed');
+                                      }
+                                    });
+                                  },
+                                  child: const Icon(
+                                      CupertinoIcons.greaterthan_circle)),
+                            ),
+                          );
+                        }),
                         const SizedBox(
                           height: 30,
                         ),

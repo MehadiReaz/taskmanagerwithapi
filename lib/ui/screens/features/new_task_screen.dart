@@ -171,7 +171,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          Get.to(AddNewTaskScreen());
+          Get.to(const AddNewTaskScreen());
         },
       ),
     );

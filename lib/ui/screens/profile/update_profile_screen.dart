@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../../data/model/auth_utility.dart';
 import '../../../data/model/login_model.dart';
-import '../../../data/model/network_response.dart';
-import '../../../data/services/network_caller.dart';
-import '../../../data/utils/urls.dart';
+import '../../state_manager/update_profile_controller.dart';
 import '../../widgets/background_screen.dart';
 import '../../widgets/user_profile_banner.dart';
 
@@ -27,7 +25,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   XFile? imageFile;
   ImagePicker picker = ImagePicker();
-  bool _profileInProgress = false;
 
   @override
   void initState() {
@@ -36,45 +33,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     _firstNameTEController.text = userData.firstName ?? '';
     _lastNameTEController.text = userData.lastName ?? '';
     _mobileTEController.text = userData.mobile ?? '';
-  }
-
-  Future<void> updateProfile() async {
-    _profileInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-    final Map<String, dynamic> requestBody = {
-      "firstName": _firstNameTEController.text.trim(),
-      "lastName": _lastNameTEController.text.trim(),
-      "mobile": _mobileTEController.text.trim(),
-      "photo": ""
-    };
-    if (_passwordTEController.text.isNotEmpty) {
-      requestBody['password'] = _passwordTEController.text;
-    }
-
-    final NetworkResponse response =
-        await NetworkCaller().postRequest(Urls.updateProfile, requestBody);
-    _profileInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-    if (response.isSuccess) {
-      userData.firstName = _firstNameTEController.text.trim();
-      userData.lastName = _lastNameTEController.text.trim();
-      userData.mobile = _mobileTEController.text.trim();
-      AuthUtility.updateUserInfo(userData);
-      _passwordTEController.clear();
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Profile updated!')));
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Profile update failed! Try again.')));
-      }
-    }
   }
 
   @override
@@ -218,20 +176,42 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       const SizedBox(
                         height: 16,
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: _profileInProgress
-                            ? const Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : ElevatedButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    updateProfile();
-                                  }
-                                },
-                                child: const Text('Update'),
-                              ),
+                      GetBuilder<UpdateProfileController>(
+                        builder: (updateProfileController) {
+                          return SizedBox(
+                            width: double.infinity,
+                            child: updateProfileController.profileInProgress ==
+                                    true
+                                ? const Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : ElevatedButton(
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        updateProfileController
+                                            .updateProfile(
+                                                _firstNameTEController.text
+                                                    .trim(),
+                                                _lastNameTEController.text
+                                                    .trim(),
+                                                _mobileTEController.text.trim(),
+                                                _passwordTEController.text
+                                                    .trim())
+                                            .then((value) {
+                                          if (value == true) {
+                                            Get.snackbar(
+                                                'Success', 'Profile Updated');
+                                          } else {
+                                            Get.snackbar('Failed',
+                                                'Profile Update Failed');
+                                          }
+                                        });
+                                      }
+                                    },
+                                    child: const Text('Update'),
+                                  ),
+                          );
+                        },
                       )
                     ],
                   ),

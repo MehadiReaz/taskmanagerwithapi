@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:taskmanagerwithapi/ui/screens/splash_screen.dart';
-import 'package:taskmanagerwithapi/ui/state_manager/login_controller.dart';
+import 'controller_bindings.dart';
 
 class TaskManagerApp extends StatelessWidget {
   static GlobalKey globalKey = GlobalKey();
@@ -42,12 +42,5 @@ class TaskManagerApp extends StatelessWidget {
       initialBinding: ControllerBindings(),
       home: const SplashScreen(),
     );
-  }
-}
-
-class ControllerBindings extends Bindings {
-  @override
-  void dependencies() {
-    Get.put(LoginController());
   }
 }
