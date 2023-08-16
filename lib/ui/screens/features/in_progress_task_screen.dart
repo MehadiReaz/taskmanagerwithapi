@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:taskmanagerwithapi/ui/screens/features/update_task_bottom_sheet.dart';
+import 'package:get/get.dart';
 import 'package:taskmanagerwithapi/ui/screens/features/update_task_status.dart';
 import 'package:taskmanagerwithapi/ui/widgets/background_screen.dart';
-
-import '../../../data/model/network_response.dart';
 import '../../../data/model/task_list_model.dart';
-import '../../../data/services/network_caller.dart';
 import '../../../data/utils/urls.dart';
+import '../../state_manager/delete_task_controller.dart';
+import '../../state_manager/get_task_controller.dart';
 import '../../widgets/TaskListTile.dart';
 import '../../widgets/user_profile_banner.dart';
 
@@ -18,21 +17,26 @@ class InProgressTaskScreen extends StatefulWidget {
 }
 
 class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
-  bool _getProgressTasksInProgress = false;
-  TaskListModel _taskListModel = TaskListModel();
-  void showEditBottomSheet(TaskData task) {
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-        return UpdateTaskSheet(
-          task: task,
-          onUpdate: () {
-            getInProgressTasks();
-          },
-        );
-      },
-    );
+  final GetTasksController _getTasksController = Get.find<GetTasksController>();
+  final DeleteTaskController _deleteTaskController =
+      Get.find<DeleteTaskController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _getTasksController.getTasks(Urls.inProgressTasks).then((value) {
+        if (value == false) {
+          Get.snackbar(
+            'Failed',
+            'In progress task data get failed!',
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            borderRadius: 10,
+          );
+        }
+      });
+    });
   }
 
   void showStatusUpdateBottomSheet(TaskData task) {
@@ -43,55 +47,11 @@ class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
         return UpdateTaskStatusSheet(
             task: task,
             onUpdate: () {
-              getInProgressTasks();
+              Get.back();
+              _getTasksController.getTasks(Urls.inProgressTasks);
             });
       },
     );
-  }
-
-  Future<void> getInProgressTasks() async {
-    _getProgressTasksInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-    final NetworkResponse response =
-        await NetworkCaller().getRequest(Urls.inProgressTasks);
-    if (response.isSuccess) {
-      _taskListModel = TaskListModel.fromJson(response.body!);
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('In progress tasks get failed')));
-      }
-    }
-    _getProgressTasksInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  Future<void> deleteTask(String taskId) async {
-    final NetworkResponse response =
-        await NetworkCaller().getRequest(Urls.deleteTask(taskId));
-    if (response.isSuccess) {
-      _taskListModel.data!.removeWhere((element) => element.sId == taskId);
-      if (mounted) {
-        setState(() {});
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Deletion of task has been failed')));
-      }
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getInProgressTasks();
-    });
   }
 
   @override
@@ -103,38 +63,133 @@ class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
             children: [
               const UserProfileAppBar(),
               Expanded(
-                child: _getProgressTasksInProgress
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : ListView.separated(
-                        itemCount: _taskListModel.data?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            elevation: 5,
-                            child: TaskListTile(
-                              color: Colors.purple,
-                              data: _taskListModel.data![index],
+                child: GetBuilder<GetTasksController>(
+                    builder: (getTasksController) {
+                  return getTasksController.getTaskInProgress
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : ListView.separated(
+                          itemCount:
+                              getTasksController.taskListModel.data?.length ??
+                                  0,
+                          itemBuilder: (context, index) {
+                            return TaskListTile(
+                              data:
+                                  getTasksController.taskListModel.data![index],
                               onDeleteTap: () {
-                                deleteTask(_taskListModel.data![index].sId!);
+                                deleteAlertDialogue(index);
+                                //deleteTask(_taskListModel.data![index].sId!);
                               },
                               onEditTap: () {
-                                showStatusUpdateBottomSheet(
-                                    _taskListModel.data![index]);
+                                editAlertDialogue(index);
                               },
-                            ),
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const Divider(
-                            height: 4,
-                          );
-                        },
-                      ),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const Divider(
+                              height: 4,
+                            );
+                          },
+                        );
+                }),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void deleteAlertDialogue(int index) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text(
+          'Delete Alert',
+          style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: const Text(
+          "Are you want to delete this item?",
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              _deleteTaskController
+                  .deleteTask(
+                      _getTasksController.taskListModel.data![index].sId!)
+                  .then((value) {
+                _getTasksController.getUpdateState();
+                if (value) {
+                  Get.snackbar(
+                    'Success',
+                    'Task deletion successful!',
+                    backgroundColor: Colors.green,
+                    colorText: Colors.white,
+                    borderRadius: 10,
+                  );
+                } else {
+                  Get.snackbar(
+                    'Failed',
+                    'Task deletion failed!',
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                    borderRadius: 10,
+                  );
+                }
+              });
+            },
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void editAlertDialogue(int index) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text(
+          'Edit Alert',
+          style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: const Text(
+          "Are you want to edit status of this item?",
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              showStatusUpdateBottomSheet(
+                  _getTasksController.taskListModel.data![index]);
+            },
+            child: const Text('Yes'),
+          ),
+        ],
       ),
     );
   }
