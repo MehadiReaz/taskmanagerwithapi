@@ -180,7 +180,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         builder: (updateProfileController) {
                           return SizedBox(
                             width: double.infinity,
-                            child: updateProfileController.profileInProgress ==
+                            child: updateProfileController
+                                        .profileUpdateInProgress ==
                                     true
                                 ? const Center(
                                     child: CircularProgressIndicator(),

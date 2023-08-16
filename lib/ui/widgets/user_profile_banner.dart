@@ -5,6 +5,7 @@ import 'package:taskmanagerwithapi/data/model/auth_utility.dart';
 import 'package:taskmanagerwithapi/ui/screens/auth/login_screen.dart';
 
 import '../screens/profile/update_profile_screen.dart';
+import '../state_manager/update_profile_controller.dart';
 
 class UserProfileAppBar extends StatefulWidget {
   final bool? isUpdateScreen;
@@ -26,60 +27,96 @@ class _UserProfileAppBarState extends State<UserProfileAppBar> {
       title: GestureDetector(
         onTap: () {
           if ((widget.isUpdateScreen ?? false) == false) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const UpdateProfileScreen()));
+            Get.to(() => const UpdateProfileScreen());
           }
         },
-        child: Row(
-          children: [
-            Visibility(
-              visible: (widget.isUpdateScreen ?? false) == false,
-              child: Row(
+        child: GetBuilder<UpdateProfileController>(
+            builder: (updateProfileController) {
+          return Row(
+            children: [
+              Row(
                 children: [
-                  CachedNetworkImage(
-                    placeholder: (_, __) =>
-                        const Icon(Icons.account_circle_outlined),
-                    imageUrl: AuthUtility.userInfo.data?.photo ?? '',
-                    errorWidget: (_, __, ___) =>
-                        const Icon(Icons.account_circle_outlined),
+                  ClipOval(
+                    child: Container(
+                      color: Colors.white,
+                      child: CachedNetworkImage(
+                        placeholder: (_, __) => Icon(Icons.face_2_outlined),
+                        imageUrl: AuthUtility.userInfo.data?.photo ?? '',
+                        errorWidget: (_, __, ___) =>
+                            Icon(Icons.face_2_outlined),
+                      ),
+                    ),
                   ),
                   const SizedBox(
                     width: 16,
                   ),
                 ],
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${AuthUtility.userInfo.data?.firstName ?? ''} ${AuthUtility.userInfo.data?.lastName ?? ''}',
-                  style: const TextStyle(fontSize: 14, color: Colors.white),
-                ),
-                Text(
-                  AuthUtility.userInfo.data?.email ?? 'Unknown',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${AuthUtility.userInfo.data?.firstName ?? ''} ${AuthUtility.userInfo.data?.lastName ?? ''}',
+                    style: const TextStyle(fontSize: 14, color: Colors.white),
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
+                  Text(
+                    AuthUtility.userInfo.data?.email ?? 'Unknown',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        }),
       ),
       actions: [
         IconButton(
           onPressed: () async {
-            await AuthUtility.clearUserInfo();
-
-            Get.offAll(() => LoginScreen());
+            if (mounted) {
+              logoutAlertDialogue();
+            }
           },
           icon: const Icon(Icons.logout),
         ),
       ],
+    );
+  }
+
+  void logoutAlertDialogue() {
+    Get.dialog(
+      AlertDialog(
+        title: const Text(
+          'Logout Alert',
+          style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: const Text(
+          'Are you want to log out?',
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              AuthUtility.clearUserInfo();
+              Get.offAll(() => LoginScreen());
+            },
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
     );
   }
 }
