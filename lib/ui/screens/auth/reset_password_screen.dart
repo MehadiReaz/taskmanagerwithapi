@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../data/model/network_response.dart';
-import '../../../data/services/network_caller.dart';
-import '../../../data/utils/urls.dart';
+import '../../state_manager/reset_password_controller.dart';
 import '../../widgets/background_screen.dart';
 import 'login_screen.dart';
 
@@ -20,41 +18,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final TextEditingController _confirmPasswordTEController =
       TextEditingController();
-  bool _setPasswordInProgress = false;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  Future<void> resetPassword() async {
-    _setPasswordInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    final Map<String, dynamic> requestBody = {
-      "email": widget.email,
-      "OTP": widget.otp,
-      "password": _passwordTEController.text
-    };
-
-    final NetworkResponse response =
-        await NetworkCaller().postRequest(Urls.resetPassword, requestBody);
-    _setPasswordInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-    if (response.isSuccess) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Password reset successful!')));
-
-        Get.offAll(() => LoginScreen());
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Reset password has been failed!')));
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,24 +86,42 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     const SizedBox(
                       height: 16,
                     ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Visibility(
-                        visible: _setPasswordInProgress == false,
-                        replacement: const Center(
-                          child: CircularProgressIndicator(),
+                    GetBuilder<ResetPasswordController>(
+                        builder: (resetPasswordController) {
+                      return SizedBox(
+                        width: double.infinity,
+                        child: Visibility(
+                          visible:
+                              resetPasswordController.setPasswordInProgress ==
+                                  false,
+                          replacement: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (!_formKey.currentState!.validate()) {
+                                return;
+                              }
+                              resetPasswordController
+                                  .resetPassword(
+                                widget.email,
+                                widget.otp,
+                                _passwordTEController.text.trim(),
+                              )
+                                  .then((value) {
+                                if (value == true) {
+                                  Get.offAll(() => LoginScreen());
+                                } else {
+                                  Get.snackbar('Failed!',
+                                      'Reset password has been failed!');
+                                }
+                              });
+                            },
+                            child: const Text('Confirm'),
+                          ),
                         ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (!_formKey.currentState!.validate()) {
-                              return;
-                            }
-                            resetPassword();
-                          },
-                          child: const Text('Confirm'),
-                        ),
-                      ),
-                    ),
+                      );
+                    }),
                     const SizedBox(
                       height: 16,
                     ),

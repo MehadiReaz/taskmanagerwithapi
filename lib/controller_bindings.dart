@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:taskmanagerwithapi/ui/state_manager/email_varification_controller.dart';
 import 'package:taskmanagerwithapi/ui/state_manager/otp_varification_controller.dart';
+import 'package:taskmanagerwithapi/ui/state_manager/reset_password_controller.dart';
 import 'package:taskmanagerwithapi/ui/state_manager/signup_controller.dart';
 
 import 'ui/state_manager/login_controller.dart';
@@ -14,5 +15,6 @@ class ControllerBindings extends Bindings {
     Get.put(SignupController());
     Get.put(EmailVarificationController());
     Get.put(OTPVarificationController());
+    Get.put(ResetPasswordController());
   }
 }
